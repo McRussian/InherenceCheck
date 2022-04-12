@@ -8,7 +8,7 @@ LOGICAL_OPERATORS: List[str] = [
 ]
 
 LOGICAL_RELATIONS: List[str] = [
-    '|-',
+    '===',
     '->',
     '<-',
 ]
@@ -18,7 +18,7 @@ BRACKETS: List[str] = [
     ')',
     '[',
     ']',
-    '|',
+    '\|',
 ]
 
 KEY_WORDS: List[str] = [

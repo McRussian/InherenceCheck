@@ -11,3 +11,7 @@ class InherenceLibException(Exception):
 class VariableException(InherenceLibException):
     pass
 
+
+class AxiomException(InherenceLibException):
+    pass
+
