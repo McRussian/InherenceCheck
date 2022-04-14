@@ -49,6 +49,5 @@ class Axiom:
             other_axiom = Axiom(other)
         else:
             other_axiom = other
-        return self.get_part_axiom('left_pattern') == other_axiom.get_part_axiom('left_pattern') \
-               and self.get_part_axiom('operator') == other_axiom.get_part_axiom('operator') \
-               and self.get_part_axiom('right_pattern') == other_axiom.get_part_axiom('right_pattern')
+
+        return all([self.__pattern_rule[name] == other_axiom.get_part_axiom(name) for name in self.__pattern_rule.keys()])
