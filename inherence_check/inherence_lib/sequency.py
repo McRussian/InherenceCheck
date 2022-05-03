@@ -1,5 +1,5 @@
 from re import split
-from typing import Dict
+from typing import Dict, List
 
 from inherence_check.inherence_lib import SequencyException
 
@@ -14,6 +14,8 @@ class Sequency:
     def __create_pattern(part: str) -> str:
         # TODO: Здесь будет вызываться парсер и создаваться паттерны для левой и правой части
         #       Пока простая заглушка
+        # TODO: Верхняя часть может содержать несколько формул, разделенных ;
+        #       Подумать что именно будет возвращаться, список формул?
         return part.strip()
 
     def __parse(self, sequency: str):
@@ -39,3 +41,19 @@ class Sequency:
             other_sequency = other
 
         return all([self.__part_sequency[name] == other_sequency.get_part_sequency(name) for name in self.__part_sequency.keys()])
+
+
+class Sequencys:
+    def __init__(self, rules: List[str]):
+        if not rules:
+            SequencyException('Sequencys list cannot be empty')
+        self.__sequency: List[Sequency] = list()
+        for rule in set(rules):
+            try:
+                sequency = Sequency(rule)
+            except SequencyException:
+                continue
+            self.__sequency.append(sequency)
+
+        if not rules:
+            SequencyException('Sequencys list cannot be empty')
