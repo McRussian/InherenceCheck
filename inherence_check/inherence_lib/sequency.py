@@ -2,13 +2,17 @@ from re import split
 from typing import Dict, List
 
 from inherence_check.inherence_lib import SequencyException
+from inherence_check.parser.parser_exception import SequencyParserException
+from inherence_check.parser.sequency_parser import SequencyParser
 
 
 class Sequency:
-    def __init__(self, sequency: str):
+    def __init__(self, sequency: str, parser: SequencyParser):
+        self.__parser = parser
+
         self.__part_sequency: Dict[str, str] = dict()
         self.__operator = '==>'
-        self.__parse(sequency)
+        self.__parse_sequency(sequency)
 
     @staticmethod
     def __create_pattern(part: str) -> str:
@@ -18,17 +22,21 @@ class Sequency:
         #       Подумать что именно будет возвращаться, список формул?
         return part.strip()
 
-    def __parse(self, sequency: str):
-        if self.__operator not in sequency:
-            raise SequencyException('Wrong sequency format, no relation between parts')
-        upper_part, lower_part = split(self.__operator, sequency, maxsplit=1)
-        self.__part_sequency['upper_part'] = self.__create_pattern(upper_part)
-        self.__part_sequency['lower_part'] = self.__create_pattern(lower_part)
+    def __parse_sequency(self, sequency: str):
+        if not self.__parser.parse(sequency):
+            raise SequencyException('The entered string is not a sequence')
+
+        left_part, right_part = split(self.__operator, sequency, maxsplit=1)
+        self.__part_sequency['left_part'] = self.__create_pattern(left_part)
+        self.__part_sequency['right_part'] = self.__create_pattern(right_part)
 
     def get_part_sequency(self, name):
         if name in self.__part_sequency.keys():
             return self.__part_sequency[name]
         raise AttributeError
+
+    def __str__(self) -> str:
+        return f"{self.__part_sequency['left_part']} {self.__operator} {self.__part_sequency['right_part']}"
 
     def __eq__(self, other):
         if not isinstance(other, str) and not isinstance(other, Sequency):
@@ -39,8 +47,7 @@ class Sequency:
             other_sequency = Sequency(other)
         else:
             other_sequency = other
-
-        return all([self.__part_sequency[name] == other_sequency.get_part_sequency(name) for name in self.__part_sequency.keys()])
+        return self.__parser.sequency_equal(str(self), str(other_sequency))
 
 
 class Sequencys:

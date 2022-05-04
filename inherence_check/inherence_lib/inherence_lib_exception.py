@@ -1,20 +1,13 @@
+from inherence_check.inherence_exception import InherenceException
 
 
-class InherenceLibException(Exception):
-    def __init__(self, msg: str):
-        self.__msg = msg
-
-    def __str__(self) -> str:
-        return self.__msg
-
-
-class VariableException(InherenceLibException):
+class VariableException(InherenceException):
     pass
 
 
-class AxiomException(InherenceLibException):
+class AxiomException(InherenceException):
     pass
 
 
-class SequencyException(InherenceLibException):
+class SequencyException(InherenceException):
     pass
