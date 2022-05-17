@@ -11,3 +11,7 @@ class AxiomException(InherenceException):
 
 class SequencyException(InherenceException):
     pass
+
+
+class RuleException(InherenceException):
+    pass

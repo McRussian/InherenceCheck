@@ -2,13 +2,12 @@ from re import split
 from typing import Dict, List
 
 from inherence_check.inherence_lib import SequencyException
-from inherence_check.parser.parser_exception import SequencyParserException
-from inherence_check.parser.sequency_parser import SequencyParser
+from inherence_check.parser import FactoryParser, SequencyParser, SequencyParserException
 
 
 class Sequency:
-    def __init__(self, sequency: str, parser: SequencyParser):
-        self.__parser = parser
+    def __init__(self, sequency: str):
+        self.__parser: SequencyParser = FactoryParser['sequency']
 
         self.__part_sequency: Dict[str, str] = dict()
         self.__operator = '==>'
@@ -51,16 +50,14 @@ class Sequency:
 
 
 class Sequencys:
-    def __init__(self, rules: List[str]):
-        if not rules:
+    def __init__(self, sequencys: List[str]):
+        if not sequencys:
             SequencyException('Sequencys list cannot be empty')
         self.__sequency: List[Sequency] = list()
-        for rule in set(rules):
+        for rule in set(sequencys):
             try:
                 sequency = Sequency(rule)
             except SequencyException:
                 continue
             self.__sequency.append(sequency)
 
-        if not rules:
-            SequencyException('Sequencys list cannot be empty')
