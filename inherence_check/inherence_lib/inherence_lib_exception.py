@@ -15,3 +15,7 @@ class SequencyException(InherenceException):
 
 class RuleException(InherenceException):
     pass
+
+
+class TreeException(InherenceException):
+    pass
