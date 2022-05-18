@@ -61,3 +61,8 @@ class Sequencys:
                 continue
             self.__sequency.append(sequency)
 
+    def __contains__(self, item):
+        if not isinstance(item, Sequency):
+            raise SequencyException('The list of sequency cannot contain objects of a different type')
+
+        return item in self.__sequency

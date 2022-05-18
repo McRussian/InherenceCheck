@@ -5,17 +5,10 @@ from inherence_check.inherence_lib import Sequency, SequencyException, RuleExcep
 
 
 class Rule:
-    def __init__(self, rule: str, separator: str = "==="):
+    def __init__(self, left: str, right: str):
         self.__upper_part: Set[Sequency] = set()
         self.__lower_part: Sequency
-        self.__separator = separator
-        self.__parse(rule)
 
-    def __parse(self, rule: str):
-        if self.__separator not in rule:
-            raise RuleException('Format error, no valid delimiter')
-
-        left, right = split(self.__separator, rule, maxsplit=2)
         try:
             sequency = Sequency(right)
         except SequencyException as err:
@@ -36,15 +29,34 @@ class Rule:
 
         return self.__lower_part == other.__lower_part and self.__upper_part == other.__upper_part
 
+    def __str__(self) -> str:
+        upper: str = '; '.join(map(str, self.__upper_part))
+        count: int = max(len(str(self.__lower_part)), len(upper))
+        return upper.center(count, ' ') + "\n" + "-" * count + "\n" + str(self.__lower_part).center(count, ' ')
+
 
 class Rules:
-    def __init__(self, rules: List[str]):
+    def __init__(self, rules: List[str], separator: str = '==='):
+        self.__separator = separator
         if not rules:
             RuleException('Rules list cannot be empty')
         self.__rules: List[Rule] = list()
         for rule in set(rules):
+            if self.__separator not in rule:
+                raise RuleException('Format error, no valid delimiter')
+            left, right = split(self.__separator, rule, maxsplit=2)
             try:
-                rule = Rule(rule)
+                rule = Rule(left, right)
             except RuleException:
                 continue
             self.__rules.append(rule)
+
+    def __contains__(self, item) -> bool:
+        if not isinstance(item, Rule):
+            raise RuleException('The list of rules cannot contain objects of a different type')
+
+        return item in self.__rules
+
+    def __len__(self) -> int:
+        return len(self.__rules)
+
