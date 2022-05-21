@@ -47,10 +47,14 @@
 Для секвенций разработана следующая грамматика:
 
 S -> SEQUENCY FOLLOW SEQUENCY
-FOLLOW -> '->'
-SEQUENCY -> '' | NAME_FORMULA SEQUENCY | SEQUENCY NAME_FORMULA | NAME_SEQUENCY SEQUENCY | SEQUENCE NAME_SEQUENCY
-NAME_SEQUENCY -> 'G' | 'D'
+FOLLOW -> '|-'
+SEQUENCY -> '' | ARGUMENT SEQUENCY | SEQUENCY ARGUMENT | NAME_SEQUENCY SEQUENCY | SEQUENCE NAME_SEQUENCY
+NAME_SEQUENCY -> 'G' | 'G' INDEX
+INDEX -> '1' | '2' | '3' | ... | '9'
 NAME_FUNCTION -> 'A' | 'B' | 'C' 
+ARGUMENT -> UNARY NAME_FUNCTION | NAME_FUNCTION | '(' ARGUMENT BINARY ARGUMENT ')'
+UNARY -> '-'
+BINARY -> '&', 'V', '->'
 
 Важно, наша грамматика не предусматривает использование символа ',' в записи секвенции,
 поэтому любая секвенция должна быть предварительно обработана, разбита на лексемы.

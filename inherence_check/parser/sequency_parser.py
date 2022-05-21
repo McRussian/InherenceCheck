@@ -1,5 +1,5 @@
 from re import split, sub
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Tuple
 
 from nltk import CFG
 from nltk import ChartParser
@@ -9,13 +9,18 @@ from inherence_check.parser import SequencyParserException
 
 class SequencyParser:
     def __init__(self,
-                 follow: str = '==>',
-                 formulas: List[str] = ['A', 'B', 'C'],
-                 default_sequency: List[str] = ['G', 'D'],
+                 follow: str = '|-',
+                 formulas: Tuple[str] = ('A', 'B', 'C'),
+                 default_sequency: str = 'G',
+                 unary_operations: Tuple[str] = ('-', ),
+                 binary_operations: Tuple[str] = ('&', 'V', '=>'),
                  ):
         self.__follow = follow
-        self.__names_formulas = formulas.copy()
-        self.__default_sequency = default_sequency.copy()
+        self.__names_formulas: Tuple[str] = formulas
+        self.__default_sequency: List[str] = [default_sequency + str(i) for i in range(10)]
+        self.__default_sequency[0] = default_sequency
+        self.__unary_operations: Tuple[str] = unary_operations
+        self.__binary_operations: Tuple[str] = binary_operations
 
         self.__create_list_rules()
 
@@ -24,7 +29,7 @@ class SequencyParser:
         self.__sequency_trees: Dict[str, List[Any]] = dict()
 
     def parse(self, sequency: str) -> bool:
-        lexems: List[str] = self.__transform_sequency(sequency)
+        lexems: List[str] = self.transform_sequency(sequency)
         try:
             tree = self.__sequency_parser.parse(lexems)
         except ValueError as err:
@@ -40,24 +45,45 @@ class SequencyParser:
         pattern = """
         S -> SEQUENCY FOLLOW SEQUENCY
         FOLLOW -> {}
-        SEQUENCY -> '' | NAME_FORMULA SEQUENCY | SEQUENCY NAME_FORMULA | NAME_SEQUENCY SEQUENCY | SEQUENCE NAME_SEQUENCY
+        SEQUENCY -> '' | ARGUMENT SEQUENCY | SEQUENCY ARGUMENT | NAME_SEQUENCY SEQUENCY | SEQUENCE NAME_SEQUENCY
         NAME_SEQUENCY -> {}
-        NAME_FORMULA -> {} 
+        INDEX -> '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9'
+        NAME_FUNCTION -> {} 
+        ARGUMENT -> UNARY NAME_FUNCTION | NAME_FUNCTION | '(' ARGUMENT BINARY ARGUMENT ')'
+        UNARY -> {}
+        BINARY -> {}
         """
         rules = pattern.format(f"'{self.__follow}'", self.__create_list_variables(self.__default_sequency),
-                                      self.__create_list_variables(self.__names_formulas))
+                               self.__create_list_variables(self.__names_formulas),
+                               self.__create_list_variables(self.__unary_operations),
+                               self.__create_list_variables(self.__binary_operations),
+                               )
         self.__rules = rules
 
     @staticmethod
-    def __create_list_variables(ls: List[str]) -> str:
+    def __create_list_variables(ls: Tuple[str]) -> str:
         return " | ".join([f"'{name}'" for name in ls])
 
-    def __transform_sequency(self, seqeuncy: str) -> List[str]:
+    def transform_sequency(self, seqeuncy: str) -> List[str]:
         sequency = seqeuncy.replace(self.__follow, f' {self.__follow} ')
         sequency = sub(r" {2,}", " ", sequency)
         pattern = r'[ ,]'
 
-        return split(pattern, sequency)
+        temps: List[str] = split(pattern, sequency)
+        lexems: List[str] = list()
+        for lexem in temps:
+            if lexem in self.__names_formulas or lexem in self.__default_sequency or lexem == self.__follow:
+                lexems.append(lexem)
+                continue
+            lexems.extend(self.__transform_operation(lexem))
+        return lexems
+
+    def __transform_operation(self, lexem: str) -> List[str]:
+        all_operations: Tuple[str] = self.__unary_operations + self.__binary_operations + ('(', ')')
+        for operator in all_operations:
+            lexem = lexem.replace(operator, f' {operator } ')
+
+        return lexem.split()
 
     def __equal_tree(self, tree_a, tree_b) -> bool:
         '''
@@ -65,8 +91,6 @@ class SequencyParser:
         Два дерева считаются одинаковыми, если они совпадают всюду,
         кроме конечных узлов (тех где формируются терминалы с именами формул, секвенций и переменных)
         '''
-        print(type(tree_a))
-        print(tree_b)
         return False
 
     def sequency_equal(self, seq_a: str, seq_b: str) -> bool:

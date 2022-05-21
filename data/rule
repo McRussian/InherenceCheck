@@ -1,0 +1,15 @@
+G, A |- === G |- -A
+G, -A => === G |- A
+G => A; G |- B === G |- (A & B)
+G |- (A & B) === G |- A
+G |- (A & B) === G |- B
+G |- A === G |- (A V B)
+G |- B === G |- (A V B)
+G1 |- (A V B); G2, A |- C; G3, B |- C === G1, G2, G3 |- C
+G, A |- B === G |- (A => B)
+G |- A; G |- (A => B) === G |- B
+G |- A; G |- -A === G |-
+G |- === G |- A
+G |- A === G, B |- A
+G, A, A |- C === G, A |- C
+G1, A, B, G2 |- C === G1, B, A, G2 |- C
