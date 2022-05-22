@@ -1,6 +1,6 @@
 import logging
 from argparse import ArgumentParser
-from typing import List, Optional
+from typing import List, Optional, Tuple
 
 from inherence_check.inherence_exception import InherenceException
 from inherence_check.inherence import InherenceCheck
@@ -10,29 +10,29 @@ from inherence_check.logger import Logger
 logger = Logger('log.txt')
 
 
-def read_items_from_file(filename: str) -> List[str]:
-    items: List[str]
+def read_items_from_file(filename: str) -> Tuple[str]:
+    items: Tuple[str]
     with open(filename) as fin:
-        items = fin.readlines()
+        items = tuple(fin.readlines())
 
     return items
 
 
 def initialize(fname_variables: str, fname_formulas: str, fname_sequencys: str, fname_rules: str) -> InherenceCheck:
     try:
-        variables: List[str] = read_items_from_file(fname_variables)
+        variables: Tuple[str] = read_items_from_file(fname_variables)
     except FileNotFoundError:
         raise ValueError(f"File {fname_variables} not found")
     try:
-        formulas: List[str] = read_items_from_file(fname_formulas)
+        formulas: Tuple[str] = read_items_from_file(fname_formulas)
     except FileNotFoundError:
         raise ValueError(f"File {fname_variables} not found")
     try:
-        sequencys: List[str] = read_items_from_file(fname_sequencys)
+        sequencys: Tuple[str] = read_items_from_file(fname_sequencys)
     except FileNotFoundError:
         raise ValueError(f"File {fname_sequencys} not found")
     try:
-        rules: List[str] = read_items_from_file(fname_rules)
+        rules: Tuple[str] = read_items_from_file(fname_rules)
     except FileNotFoundError:
         raise ValueError(f"File {fname_rules} not found")
 
