@@ -18,7 +18,8 @@ def read_items_from_file(filename: str) -> Tuple[str]:
     return items
 
 
-def initialize(fname_variables: str, fname_formulas: str, fname_sequencys: str, fname_rules: str) -> InherenceCheck:
+def initialize(fname_variables: str, fname_formulas: str,
+               fname_sequencys: str, fname_rules: str) -> InherenceCheck:
     try:
         variables: Tuple[str] = read_items_from_file(fname_variables)
     except FileNotFoundError:

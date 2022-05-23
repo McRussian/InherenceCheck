@@ -1,5 +1,4 @@
-from .parser_exception import SequencyParserException
-
+from .parser_exception import SequencyParserException, PatternComparatorException
 from .sequency_parser import SequencyParser
-
-from .factory import FactoryParser
+from .sequency_comparator import PatternComparator
+from .factory import FactoryParser, FactorComparator

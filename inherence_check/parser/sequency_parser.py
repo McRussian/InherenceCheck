@@ -65,7 +65,7 @@ class SequencyParser:
         if sequency not in self.__sequency_patterns.keys():
             raise SequencyParserException('There is no such sequence in the parser')
 
-        return self.__sequency_patterns[sequency] == "F1 |- F1"
+        return self.__sequency_patterns[sequency] == "F1 |- F1" or self.__sequency_patterns[sequency] == "- F1 |- - F1"
 
     def __create_list_rules(self):
         pattern = """

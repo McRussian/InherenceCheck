@@ -11,7 +11,7 @@ class Logger:
             fin.write(f'{now} :: {msg}')
 
     def warning(self, msg: str):
-        self.__write_messages(f'Warning: {msg}')
+        self.__write_messages(f'Warning: {msg}\n')
 
     def error(self, msg: str):
-        self.__write_messages(f'Error: {msg}')
+        self.__write_messages(f'Error: {msg}\n')
