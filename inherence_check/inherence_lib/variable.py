@@ -1,6 +1,7 @@
 from typing import List
 
-from inherence_check.inherence_lib import ALL_LEXEMES, VariableException
+from .lexems import ALL_LEXEMES
+from .inherence_lib_exception import VariableException
 
 
 class Variable:

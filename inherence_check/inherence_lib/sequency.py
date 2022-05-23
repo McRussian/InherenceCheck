@@ -1,10 +1,12 @@
 from re import split
 from typing import Dict, List
+import sys
+sys.path.append(".")
 
-from inherence_check.inherence_lib import SequencyException
-from inherence_check.parser import FactoryParser, FactorComparator, \
-    SequencyParser, SequencyParserException, \
-    PatternComparator, PatternComparatorException
+from .inherence_lib_exception import SequencyException, SequencyParserException, PatternComparatorException
+from .sequency_parser import SequencyParser
+from .sequency_comparator import PatternComparator
+from .factory import FactorComparator, FactoryParser
 
 
 class Sequency:

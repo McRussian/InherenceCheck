@@ -2,8 +2,7 @@ from pathlib import Path
 from argparse import ArgumentParser
 from typing import List, Optional, Tuple
 
-from inherence_lib import Tree
-from inherence_exception import InherenceException
+from inherence_lib import Tree, InherenceException
 from inherence import InherenceCheck
 from logger import Logger
 

@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from inherence_check.parser import FactorComparator, PatternComparator
+from inherence_check.inherence_lib.factory import FactorComparator, PatternComparator
 
 
 class TestPatternComparator(TestCase):

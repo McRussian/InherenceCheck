@@ -1,13 +1,11 @@
 from typing import List, Tuple
 
-from inherence_check.inherence_lib import (
+from inherence_lib import (
     Sequency, Sequencys, SequencyException,
     Rule, Rules, RuleException,
-    Tree, TreeException
-)
-from inherence_check.parser import FactoryParser, SequencyParser
-from inherence_check.inherence_exception import InherenceException
-from inherence_check.logger import Logger
+    Tree, TreeException,
+    FactoryParser, SequencyParser, InherenceException)
+from logger import Logger
 
 
 class InherenceCheck:

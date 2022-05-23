@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from inherence_check.parser import SequencyParser, SequencyParserException
+from inherence_check.inherence_lib.sequency_parser import SequencyParser, SequencyParserException
 
 
 class TestSequencyParser(TestCase):

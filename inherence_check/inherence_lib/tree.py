@@ -1,8 +1,11 @@
 from re import split
 from typing import List, Tuple
 
-from inherence_check.inherence_lib import Rule, RuleException, TreeException
-from inherence_check.parser import FactoryParser, SequencyParser
+from .rule import Rule, RuleException
+from .inherence_lib_exception import TreeException
+from .sequency_parser import SequencyParser
+from .factory import FactoryParser
+
 
 class Tree:
     """

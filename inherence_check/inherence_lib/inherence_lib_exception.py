@@ -1,4 +1,9 @@
-from inherence_check.inherence_exception import InherenceException
+class InherenceException(Exception):
+    def __init__(self, msg: str):
+        self.__msg = msg
+
+    def __str__(self) -> str:
+        return self.__msg
 
 
 class VariableException(InherenceException):
@@ -18,4 +23,12 @@ class RuleException(InherenceException):
 
 
 class TreeException(InherenceException):
+    pass
+
+
+class SequencyParserException(InherenceException):
+    pass
+
+
+class PatternComparatorException(InherenceException):
     pass

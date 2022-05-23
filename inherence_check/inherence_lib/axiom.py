@@ -1,7 +1,8 @@
 from re import split
 from typing import Dict, Tuple
 
-from inherence_check.inherence_lib import LOGICAL_RELATIONS, AxiomException
+from .lexems import LOGICAL_RELATIONS
+from .inherence_lib_exception import AxiomException
 
 
 class Axiom:

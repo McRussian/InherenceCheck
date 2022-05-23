@@ -1,7 +1,8 @@
 from re import split
 from typing import Dict, List
 
-from inherence_check.inherence_lib import Sequency, SequencyException, RuleException
+from .sequency import Sequency, SequencyException
+from .inherence_lib_exception import RuleException
 
 
 class Rule:

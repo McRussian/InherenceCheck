@@ -1,6 +1,7 @@
 from typing import Dict, Any
 
-from inherence_check.parser import SequencyParser, PatternComparator
+from .sequency_parser import SequencyParser
+from .sequency_comparator import PatternComparator
 
 
 FactoryParser: Dict[str, Any] = {

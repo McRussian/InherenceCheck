@@ -4,7 +4,7 @@ from typing import Any, Dict, List, Tuple
 from nltk import CFG
 from nltk import ChartParser
 
-from inherence_check.parser import SequencyParserException
+from .inherence_lib_exception import SequencyParserException
 
 
 class SequencyParser:

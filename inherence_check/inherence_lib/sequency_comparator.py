@@ -1,7 +1,7 @@
 from typing import Dict, List, Tuple, Optional
 from re import split
 
-from inherence_check.parser import PatternComparatorException
+from .inherence_lib_exception import PatternComparatorException
 
 
 class PatternComparator:

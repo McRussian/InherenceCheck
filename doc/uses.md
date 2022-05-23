@@ -3,6 +3,7 @@
 ## <a name=running_programm></a>Запуск программы
 
 Для запуска программы нужен интерпретатор питона версии не ниже 3.6.
+Программа использует библиотеку NLTK, поэтому для использования программы ее нужно поставить. 
 Программа запускается с помощью терминала, и все управление происходит при помощи терминала.
 Программе для работы нужны некоторые файлы:
 
@@ -18,6 +19,21 @@
 - '--rule', '-r' - для указания файла с набором правил
 
 По умолчанию берутся те файлы, которые лежат в каталоге data.
+
+Пример запуска программы:
+python3.9 main.py -h
+usage: main.py [-h] [--variable VARIABLE] [--formula FORMULA] [--sequency SEQUENCY] [--rule RULE]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --variable VARIABLE, -v VARIABLE
+                        Enter filename with list name of variables
+  --formula FORMULA, -f FORMULA
+                        Enter filename with list name of formulas
+  --sequency SEQUENCY, -s SEQUENCY
+                        Enter filename with list of sequencys
+  --rule RULE, -r RULE  Enter filename with list of rules
+
 
 После того как указанные файлы считались, и настроился парсер, можно проверять дерево вывода.
 Для этого запускается цикл, в котором запрашивается имя файла с деревом вывода.
