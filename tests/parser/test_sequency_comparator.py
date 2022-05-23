@@ -10,6 +10,7 @@ class TestPatternComparator(TestCase):
         self.assertTrue(comparator.compare_pattern('G |- ( F1 ==> F2 )', '|- ( F1 ==> - - F1 )'))
         self.assertTrue(comparator.compare_pattern('G |- - F1', 'F1 |- - - F1'))
         self.assertTrue(comparator.compare_pattern('G |-', 'F1, -F1 |-'))
+        self.assertTrue(comparator.compare_pattern('G F1 |- F2', 'F1 |- --F1'))
 
         self.assertFalse(comparator.compare_pattern('G |- ( F1 ==> F2 )', '|- ( F1 V --F1)'))
         self.assertFalse(comparator.compare_pattern('G |- ( F1 ==> F2 )', '|- F1 , --F1'))

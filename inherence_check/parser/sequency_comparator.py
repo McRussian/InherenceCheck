@@ -37,8 +37,8 @@ class PatternComparator:
 
     def __remove_unary_operations(self, pattern: str) -> str:
         for operator in self.__unary:
-            while operator in pattern:
-                pattern = pattern.replace(f'{operator} ', '')
+            while f' {operator}' in pattern:
+                pattern = pattern.replace(f' {operator}', '')
         return pattern
 
     def __check_forall_sequency(self, pattern: str) -> bool:
@@ -55,6 +55,12 @@ class PatternComparator:
             return True
         if not self.__check_forall_sequency(left) and not self.__check_forall_sequency(right):
             return len(left.split()) == len(right.split())
+        if self.__check_forall_sequency(left):
+            lexems: List[str] = right.split()
+            return sum([lexems.count(operator) for operator in self.__binary]) == 0
+        if self.__check_forall_sequency(right):
+            lexems: List[str] = left.split()
+            return sum([lexems.count(operator) for operator in self.__binary]) == 0
         return False
 
     def __check_structure_with_binary(self, left: str, right: str) -> bool:

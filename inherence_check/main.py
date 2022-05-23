@@ -1,25 +1,26 @@
-import logging
+from pathlib import Path
 from argparse import ArgumentParser
 from typing import List, Optional, Tuple
 
-from inherence_check.inherence_exception import InherenceException
-from inherence_check.inherence import InherenceCheck
-from inherence_check.logger import Logger
+from inherence_lib import Tree
+from inherence_exception import InherenceException
+from inherence import InherenceCheck
+from logger import Logger
 
 
 logger = Logger('log.txt')
 
 
-def read_items_from_file(filename: str) -> Tuple[str]:
+def read_items_from_file(filename: Path) -> Tuple[str]:
     items: Tuple[str]
     with open(filename) as fin:
-        items = tuple(fin.readlines())
+        items = tuple(map(lambda s: s.strip('\n'), fin.readlines()))
 
     return items
 
 
-def initialize(fname_variables: str, fname_formulas: str,
-               fname_sequencys: str, fname_rules: str) -> InherenceCheck:
+def initialize(fname_variables: Path, fname_formulas: Path,
+               fname_sequencys: Path, fname_rules: Path) -> InherenceCheck:
     try:
         variables: Tuple[str] = read_items_from_file(fname_variables)
     except FileNotFoundError:
@@ -42,38 +43,46 @@ def initialize(fname_variables: str, fname_formulas: str,
 
 
 def running_check(checker: InherenceCheck):
+    data: Path = Path.cwd().parent / 'data'
     while True:
         filename = input('Enter Filename with Inherence Tree: ')
+        if filename == 'exit' or filename == 'quit':
+            break
+        tree: Tuple[str] = list()
         try:
-            tree: List[str] = read_items_from_file(filename)
+            tree = read_items_from_file(data / filename)
         except Exception as err:
             logger.error(err)
 
         try:
-            checker.check_inherence(tree)
-        except InherenceException as err:
+            checker.check_inherence(Tree(tree))
+            print(f"Tree in filename {filename} - It is correct inherence...")
+        except Exception as err:
             logger.error(err)
+            print(err)
+
 
 
 if __name__ == '__main__':
+    data: Path = Path.cwd().parent / 'data'
     arg_parser = ArgumentParser()
     arg_parser.add_argument('--variable', '-v',
-                            dest='variable', default='data/variable',
+                            dest='variable', default='variable',
                             help='Enter filename with list name of variables')
     arg_parser.add_argument('--formula', '-f',
-                            dest='formula', default='data/formula',
+                            dest='formula', default='formula',
                             help='Enter filename with list name of formulas')
     arg_parser.add_argument('--sequency', '-s',
-                            dest='sequency', default='data/sequency',
+                            dest='sequency', default='sequency',
                             help='Enter filename with list of sequencys')
     arg_parser.add_argument('--rule', '-r',
-                            dest='rule', default='data/rule',
+                            dest='rule', default='rule',
                             help='Enter filename with list of rules')
     args = arg_parser.parse_args()
     checker: Optional[InherenceCheck] = None
     try:
-         checker = initialize(fname_variables=args.variable, fname_formulas=args.formula,
-                                             fname_rules=args.rule, fname_sequencys=args.sequency)
+         checker = initialize(fname_variables=data / args.variable, fname_formulas=data / args.formula,
+                                             fname_rules=data / args.rule, fname_sequencys=data / args.sequency)
     except ValueError as err:
         logger.error(str(err))
 

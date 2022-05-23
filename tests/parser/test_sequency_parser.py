@@ -52,6 +52,9 @@ class TestSequencyParser(TestCase):
         sequency = "-A  |- -A"
         parser.parse(sequency)
         self.assertTrue(parser.is_axiom(sequency))
+        sequency = "--A  |- --A"
+        parser.parse(sequency)
+        self.assertTrue(parser.is_axiom(sequency))
 
         sequency = "B  |- B"
         parser.parse(sequency)

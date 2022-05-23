@@ -1,12 +1,12 @@
 from re import split
-from typing import Dict, List, Set
+from typing import Dict, List
 
 from inherence_check.inherence_lib import Sequency, SequencyException, RuleException
 
 
 class Rule:
     def __init__(self, left: str, right: str):
-        self.__upper_part: Set[Sequency] = set()
+        self.__upper_part: List[Sequency] = list()
         self.__lower_part: Sequency
 
         try:
@@ -21,13 +21,19 @@ class Rule:
                 sequency = Sequency(pattern)
             except SequencyException as err:
                 raise RuleException(str(err))
-            self.__upper_part.add(sequency)
+            self.__upper_part.append(sequency)
 
     def __eq__(self, other):
-        if isinstance(other, Rule):
-            raise RuleException('Rule I can only compare with another rule')
-
-        return self.__lower_part == other.__lower_part and self.__upper_part == other.__upper_part
+        if not isinstance(other, Rule):
+            raise RuleException(f'Rule {self} I can only compare with another rule {other}')
+        if self.__lower_part != other.__lower_part:
+            return False
+        if len(self.__upper_part) != len(other.__upper_part):
+            return False
+        for seq1, seq2 in zip(self.__upper_part, other.__upper_part):
+            if seq1 != seq2:
+                return False
+        return True
 
     def __str__(self) -> str:
         upper: str = '; '.join(map(str, self.__upper_part))
@@ -53,7 +59,7 @@ class Rules:
 
     def __contains__(self, item) -> bool:
         if not isinstance(item, Rule):
-            raise RuleException('The list of rules cannot contain objects of a different type')
+            raise RuleException('The list of rules cannot contain objects %r of a different type', item)
 
         return item in self.__rules
 

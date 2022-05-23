@@ -65,7 +65,10 @@ class SequencyParser:
         if sequency not in self.__sequency_patterns.keys():
             raise SequencyParserException('There is no such sequence in the parser')
 
-        return self.__sequency_patterns[sequency] == "F1 |- F1" or self.__sequency_patterns[sequency] == "- F1 |- - F1"
+        return self.__sequency_patterns[sequency] == "F1 |- F1" or \
+               self.__sequency_patterns[sequency] == "- F1 |- - F1" or \
+               self.__sequency_patterns[sequency] == "- - F1 |- - - F1"
+
 
     def __create_list_rules(self):
         pattern = """
@@ -116,31 +119,3 @@ class SequencyParser:
             pattern = pattern.replace(key, f'F{number}')
             number = number + 1
         return pattern
-
-    def __equal_tree(self, tree_a, tree_b) -> bool:
-        '''
-        Функция проверяет совпадение двух деревеьев вывода.
-        Два дерева считаются одинаковыми, если они совпадают всюду,
-        кроме конечных узлов (тех где формируются терминалы с именами формул, секвенций и переменных)
-        '''
-        return False
-
-    def sequency_equal(self, seq_a: str, seq_b: str) -> bool:
-        '''
-        Функция проверт две секвенции на равенство
-        Две секвенции считаются равными, если совпадают
-        какие-нить деревья вывода из их список деревьев
-        :param seq_a:
-        :param seq_b:
-        :return:
-        '''
-        if not self.parse(seq_a) or not self.parse(seq_b):
-            return False
-        tree_seq_a: List[Any] = self.__sequency_trees[seq_a]
-        tree_seq_b: List[Any] = self.__sequency_trees[seq_b]
-
-        for tree_a in tree_seq_a:
-            for tree_b in tree_seq_b:
-                if self.__equal_tree(str(tree_a), str(tree_b)):
-                    return True
-        return False

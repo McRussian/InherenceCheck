@@ -32,5 +32,7 @@ class InherenceCheck:
     def check_inherence(self, tree: Tree) -> bool:
         for ls_rules in tree:
             for rule in ls_rules:
+                print(rule)
                 if rule not in self.__rules:
-                    raise InherenceException('Error of inherense: %r', ls_rules)
+                    print(f'Rule {rule} not found')
+                    raise InherenceException(f'Error of inherense: {ls_rules}')
