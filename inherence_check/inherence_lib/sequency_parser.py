@@ -12,12 +12,14 @@ class SequencyParser:
                  follow: str = '|-',
                  formulas: Tuple[str] = ('A', 'B', 'C'),
                  default_sequency: str = 'G',
+                 variables: Tuple[str] = ('x', 'y', 'z'),
                  unary_operations: Tuple[str] = ('-', ),
                  binary_operations: Tuple[str] = ('&', 'V', '=>'),
                  ):
         self.__follow = follow
         self.__names_formulas: Tuple[str] = formulas
         self.__default_sequency: List[str] = [default_sequency + str(i) for i in range(10)]
+        self.__variables: Tuple[str] = variables
         self.__default_sequency[0] = default_sequency
         self.__unary_operations: Tuple[str] = unary_operations
         self.__binary_operations: Tuple[str] = binary_operations
@@ -45,11 +47,13 @@ class SequencyParser:
     def transform_sequency(self, seqeuncy: str) -> List[str]:
         sequency = seqeuncy.replace(self.__follow, f' {self.__follow} ')
         sequency = sub(r" {2,}", " ", sequency)
-        pattern = r'[ ,]'
+        pattern = r'[ ,]+'
 
         temps: List[str] = split(pattern, sequency)
         lexems: List[str] = list()
         for lexem in temps:
+            if not lexem:
+                continue
             if lexem in self.__names_formulas or lexem in self.__default_sequency or lexem == self.__follow:
                 lexems.append(lexem)
                 continue
@@ -69,23 +73,25 @@ class SequencyParser:
                self.__sequency_patterns[sequency] == "- F1 |- - F1" or \
                self.__sequency_patterns[sequency] == "- - F1 |- - - F1"
 
-
     def __create_list_rules(self):
         pattern = """
         S -> SEQUENCY FOLLOW SEQUENCY
         FOLLOW -> {}
         SEQUENCY -> '' | ARGUMENT SEQUENCY | SEQUENCY ARGUMENT | NAME_SEQUENCY SEQUENCY | SEQUENCE NAME_SEQUENCY
         NAME_SEQUENCY -> {}
-        INDEX -> '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9'
         NAME_FUNCTION -> {} 
-        ARGUMENT -> UNARY NAME_FUNCTION | NAME_FUNCTION | '(' ARGUMENT BINARY ARGUMENT ')'
+        ARGUMENT -> UNARY NAME_FUNCTION | NAME_FUNCTION | '(' ARGUMENT BINARY ARGUMENT ')' | SELECTOR
         UNARY -> {}
         BINARY -> {}
+        SELECTOR -> QUANTOR VARIABLE NAME_FUNCTION
+        QUANTOR -> '%forall' | '%exist'
+        VARIABLE -> {}
         """
-        rules = pattern.format(f"'{self.__follow}'", self.__create_list_variables(self.__default_sequency),
+        rules = pattern.format(f"'{self.__follow}'", self.__create_list_variables(tuple(self.__default_sequency)),
                                self.__create_list_variables(self.__names_formulas),
                                self.__create_list_variables(self.__unary_operations),
                                self.__create_list_variables(self.__binary_operations),
+                               self.__create_list_variables(self.__variables)
                                )
         self.__rules = rules
 
@@ -96,9 +102,18 @@ class SequencyParser:
     def __transform_operation(self, lexem: str) -> List[str]:
         all_operations: Tuple[str] = self.__unary_operations + self.__binary_operations + ('(', ')')
         for operator in all_operations:
-            lexem = lexem.replace(operator, f' {operator } ')
+            lexem = lexem.replace(operator, f' {operator} ')
 
         return lexem.split()
+
+    @staticmethod
+    def __replace_item_list(ls: List[str], old_value: str, new_value: str):
+        while True:
+            try:
+                index = ls.index(old_value)
+                ls[index] = new_value
+            except ValueError:
+                break
 
     def __create_pattern(self, lexems: List[str]) -> str:
         """
@@ -109,13 +124,21 @@ class SequencyParser:
         :return:
         """
         # Первым делом заменяем все имена формул на Fi, согласно порядку, в котором они встречаются в формуле
-        index: Dict[str, int] = dict()
+        index_formulas: Dict[str, int] = dict()
         for formula in self.__names_formulas:
             if formula in lexems:
-                index[formula] = lexems.index(formula)
+                index_formulas[formula] = lexems.index(formula)
+        index_variables: Dict[str, int] = dict()
+        for variable in self.__variables:
+            if variable in lexems:
+                index_variables[variable] = lexems.index(variable)
         number: int = 1
-        pattern: str = ' '.join(lexems)
-        for key, value in sorted(index.items(), key=lambda item: item[1]):
-            pattern = pattern.replace(key, f'F{number}')
+        for key, value in sorted(index_formulas.items(), key=lambda item: item[1]):
+            self.__replace_item_list(lexems, key, f'F{number}')
+            number += 1
+        number = 1
+        for key, value in sorted(index_variables.items(), key=lambda item: item[1]):
+            self.__replace_item_list(lexems, key, f'x{number}')
             number = number + 1
+        pattern: str = ' '.join(lexems)
         return pattern

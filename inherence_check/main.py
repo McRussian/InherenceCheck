@@ -61,7 +61,6 @@ def running_check(checker: InherenceCheck):
             print(err)
 
 
-
 if __name__ == '__main__':
     data: Path = Path.cwd().parent / 'data'
     arg_parser = ArgumentParser()

@@ -52,9 +52,12 @@ SEQUENCY -> '' | ARGUMENT SEQUENCY | SEQUENCY ARGUMENT | NAME_SEQUENCY SEQUENCY 
 NAME_SEQUENCY -> 'G' | 'G' INDEX
 INDEX -> '1' | '2' | '3' | ... | '9'
 NAME_FUNCTION -> 'A' | 'B' | 'C' 
-ARGUMENT -> UNARY NAME_FUNCTION | NAME_FUNCTION | '(' ARGUMENT BINARY ARGUMENT ')'
+ARGUMENT -> UNARY NAME_FUNCTION | NAME_FUNCTION | '(' ARGUMENT BINARY ARGUMENT ')' | SELECTOR
 UNARY -> '-'
 BINARY -> '&', 'V', '->'
+SELECTOR -> QUANTOR VARIABLE NAME_FUNCTION
+QUANTOR -> '%forall' | '%exist'
+VARIABLE -> 'x' | 'y' | 'z'
 
 Важно, наша грамматика не предусматривает использование символа ',' в записи секвенции,
 поэтому любая секвенция должна быть предварительно обработана, разбита на лексемы.

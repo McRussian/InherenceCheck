@@ -1,5 +1,7 @@
 from re import split
 from typing import List, Tuple
+from time import sleep
+
 
 from .rule import Rule, RuleException
 from .inherence_lib_exception import TreeException

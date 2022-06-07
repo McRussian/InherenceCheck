@@ -14,7 +14,13 @@ class TestSequencyParser(TestCase):
         self.assertTrue(parser.parse('G1, G2, G3 |- C'))
         self.assertTrue(parser.parse('G |- (A => B)'))
         self.assertTrue(parser.parse('|- (A => --A)'))
+        self.assertTrue(parser.parse('G, %forall x A |- A'))
+        self.assertTrue(parser.parse('G , %forall x A |-  A'))
+        self.assertTrue(parser.parse('G, %exist x A |- A'))
+        self.assertTrue(parser.parse('G , %exist x A |-  A'))
+
         self.assertFalse(parser.parse('A |- AB'))
+        self.assertFalse(parser.parse('G , %%exist x A |-  A'))
 
     def test_transform_sequency(self):
         parser = SequencyParser()
@@ -24,7 +30,12 @@ class TestSequencyParser(TestCase):
         self.assertEqual(parser.transform_sequency('G1, G2, G3 |- C'), ['G1', 'G2', 'G3', '|-', 'C'])
         self.assertEqual(parser.transform_sequency('G1 ,  G2,  G3 |- C'), ['G1', 'G2', 'G3', '|-', 'C'])
         self.assertEqual(parser.transform_sequency('G1,G2,G3 |- C'), ['G1', 'G2', 'G3', '|-', 'C'])
+        self.assertEqual(parser.transform_sequency('G, %forall x A |- A'), ['G', '%forall', 'x', 'A', '|-', 'A'])
+        self.assertEqual(parser.transform_sequency('G , %forall x A |-  A'), ['G', '%forall', 'x', 'A', '|-', 'A'])
+        self.assertEqual(parser.transform_sequency('G, %exist x A |- A'), ['G', '%exist', 'x', 'A', '|-', 'A'])
+        self.assertEqual(parser.transform_sequency('G , %exist x A |-  A'), ['G', '%exist', 'x', 'A', '|-', 'A'])
 
+        self.assertEqual(parser.transform_sequency('G |-'), ['G', '|-'])
         self.assertEqual(parser.transform_sequency('G |- -A'), ['G', '|-', '-', 'A'])
         self.assertEqual(parser.transform_sequency('G1 |- (A V B)'), ['G1', '|-', '(', 'A', 'V', 'B', ')'])
         self.assertEqual(parser.transform_sequency('G1 |- (A => B)'), ['G1', '|-', '(', 'A', '=>', 'B', ')'])
@@ -41,6 +52,10 @@ class TestSequencyParser(TestCase):
         sequency = "G, B, A, G |- G, A, B, G"
         parser.parse(sequency)
         self.assertEqual("G F1 F2 G |- G F2 F1 G", parser.pattern(sequency))
+
+        sequency = "G, %forall x A, %exist y C |- B, C"
+        parser.parse(sequency)
+        self.assertEqual("G %forall x1 F1 %exist x2 F2 |- F3 F2", parser.pattern(sequency))
 
         self.assertRaises(SequencyParserException, parser.pattern, "G |- B")
 

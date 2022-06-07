@@ -16,7 +16,12 @@ class Rule:
             raise RuleException(str(err))
         self.__lower_part = sequency
 
-        patterns = split('; +', left)
+        try:
+            patterns = split('; +', left)
+        except Exception as err:
+            print(left)
+            print(f'Error split: {err}')
+
         for pattern in patterns:
             try:
                 sequency = Sequency(pattern)
